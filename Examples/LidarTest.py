@@ -1,10 +1,10 @@
-import YdLidar
+import PyLidar3
 import time # Time module
 #Serial port to which lidar connected, Get it from device manager windows
 #In linux type in terminal -- ls /dev/tty* 
 port = input("Enter port name which lidar is connected:") #windows
 #port = "/dev/ttyUSB0" #linux
-Obj = YdLidar.YdLidarX4(port)
+Obj = PyLidar3.YdLidarX4(port)
 if(Obj.Connect()):
     print(Obj.GetDeviceInfo())
     gen = Obj.StartScanning()

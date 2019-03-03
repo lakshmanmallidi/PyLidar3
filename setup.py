@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="PyLidar3",
-    python_requires="<=2.7.15",
+    python_requires=">=3.4",
     version="1.0",
     author="Lakshman mallidi",
     author_email="lakshman.mallidi@gmail.com",
