@@ -11,6 +11,7 @@ Source code is available on github's repository. <br />
 * pyserial
 * time
 * math
+* enum
 
 ## Installation
 
@@ -21,25 +22,92 @@ pip install PyLidar3
 You can also install using setup.py file from git repository.
 
 ## Usage
-This package consists of multiple classes representing the version of lidar you are using. The class structure is YdLidarX4 where X4 is version name ydlidar. 0.1 version of this package does only contain class for X4 version only. Further contribution are actively accepted. 
-##### Functions:
-YdLidarX4
+This package consists of multiple classes representing the version of lidar you are using. The class structure is YdLidarX4 where X4 is version name ydlidar. Further contribution are actively accepted. 
+##### Class structure:
+###### YdLidarX4
+`Arguments`: port, chunk_size(default:2048).<br/>
+
+`port`: serial port to which device is connected. Example: com4, /dev/ttyAMC0.<br/>
+
+`chunk_size`: Number of bytes of data read from device. Increase in chunk_size results in more averaged angle:distance pairs but increase response time result in slower data acquisition. For faster data acquisition decrease chunk_size.<br/>
+
 * `Connect` -- Begin serial connection with Lidar by opening serial port. Return success status True/False.<br />
+
 * `StartScanning` -- Begin the lidar and returns a generator which returns a dictionary consisting angle(degrees) and distance(meters).<br />
- Return Format : {angle(1):distance, angle(2):distance,....................,angle(360):distance}<br />
- Return False in case of exception.<br />
+ `Return Format` : {angle(0):distance, angle(2):distance,....................,angle(359):distance}<br />
+
 * `StopScanning` -- Stops scanning but keeps serial connection alive.<br />
- Return True on success.<br />
- Return False in case of exception.<br />
-* `GetHealthStatus` -- Returns Health status of lidar<br />
- True: good <br />
- False: Not good or Exception or not connected <br />
-* `GetDeviceInfo` -- Reboots the Lidar. Return True on success. Return False in case of exception. <br />
+
+* `GetHealthStatus` -- Returns True if Health of lidar is good else returns False<br />
+
+* `GetDeviceInfo` -- Returns Information of Lidar version, serial number etc.<br />
+
 * `Reset` -- Reboot the lidar <br />
+
 * `Disconnect` -- Stop scanning and close serial communication with Lidar. <br />
- Return True on success.<br />
- Return False in case of exception.<br />
-##### Examples
+
+###### YdLidarG4
+`Arguments`: port, chunk_size(default:2048).<br/>
+
+`port`: serial port to which device is connected. Example: com4, /dev/ttyAMC0.<br/>
+
+`chunk_size`: Number of bytes of data read from device. Increase in chunk_size results in more averaged angle:distance pairs but increase response time result in slower data acquisition. For faster data acquisition decrease chunk_size.<br/>
+
+* `Connect` -- Begin serial connection with Lidar by opening serial port. Return success status True/False.<br />
+
+
+* `StartScanning` -- Begin the lidar and returns a generator which returns a dictionary consisting angle(degrees) and distance(meters).<br />
+ `Return Format` : {angle(0):distance, angle(2):distance,....................,angle(359):distance}<br />
+
+* `StopScanning` -- Stops scanning but keeps serial connection alive.<br />
+
+* `GetHealthStatus` -- Returns True if Health of lidar is good else returns False<br />
+
+* `GetDeviceInfo` -- Returns Information of Lidar version, serial number etc.<br />
+
+* `EnableLowPowerMode` -- Enable Low Power Consumption Mode(Turn motor and distance-measuring unit off in StopScanning).<br/>
+
+* `DisableLowPowerMode` -- Disable Low Power Consumption Mode(Turn motor and distance-measuring unit on StopScanning).<br/>
+
+* `GetLowPowerModeStatus` -- Return True if Low Power Consumption Mode is Enable else return False. <br/>
+
+```
+class FrequencyStep(Enum):
+    oneTenthHertz=1
+    oneHertz=2
+```
+* `IncreaseCurrentFrequency` -- Increase current frequency by oneTenth or one depends on enum FrequencyStep. <br/>
+
+* `DecreaseCurrentFrequency` -- Decrease current frequency by oneTenth or one depends on enum FrequencyStep. <br/>
+```
+import PyLidar3
+port = input("Enter port name which lidar is connected:") #windows
+Obj = PyLidar3.YdLidarG4(port)
+if(Obj.Connect()):
+    print(Obj.GetDeviceInfo())
+    print(Obj.GetCurrentFrequency())
+    Obj.IncreaseCurrentFrequency(PyLidar3.FrequencyStep.oneTenthHertz)
+    print(Obj.GetCurrentFrequency())
+    Obj.DecreaseCurrentFrequency(PyLidar3.FrequencyStep.oneHertz)
+    print(Obj.GetCurrentFrequency())
+    Obj.Disconnect()
+else:
+    print("Error connecting to device")
+```
+
+* `EnableConstantFrequency` -- Enables constant frequency default Enable.
+
+* `DisableConstantFrequency` -- Disable constant frequency.
+
+* `SwitchRangingFrequency` -- Switch between ranging frequencies 4khz, 8khz and 9khz, default 9khz.
+
+* `GetCurrentRangingFrequency` -- Returns current Ranging Frequency in khz.
+
+* `Reset` -- Reboot the lidar <br />
+
+* `Disconnect` -- Stop scanning and close serial communication with Lidar. <br />
+
+## Examples
 This Example prints data from lidar
 ```
 import PyLidar3
@@ -48,7 +116,7 @@ import time # Time module
 #In linux type in terminal -- ls /dev/tty* 
 port = input("Enter port name which lidar is connected:") #windows
 #port = "/dev/ttyUSB0" #linux
-Obj = PyLidar3.YdLidarX4(port)
+Obj = PyLidar3.YdLidarX4(port) #PyLidar3.your_version_of_lidar(port,chunk_size) 
 if(Obj.Connect()):
     print(Obj.GetDeviceInfo())
     gen = Obj.StartScanning()
@@ -89,7 +157,7 @@ for _ in range(361):
     y.append(0)
 
 port =  input("Enter port name which lidar is connected:") #windows
-Obj = PyLidar3.YdLidarX4(port)
+Obj = PyLidar3.YdLidarX4(port) #PyLidar3.your_version_of_lidar(port,chunk_size) 
 threading.Thread(target=draw).start()
 if(Obj.Connect()):
     print(Obj.GetDeviceInfo())

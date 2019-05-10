@@ -24,7 +24,7 @@ for _ in range(361):
     y.append(0)
 
 port =  input("Enter port name which lidar is connected:") #windows
-Obj = PyLidar3.YdLidarX4(port)
+Obj = PyLidar3.YdLidarX4(port)  #PyLidar3.your_version_of_lidar(port,chunk_size)
 threading.Thread(target=draw).start()
 if(Obj.Connect()):
     print(Obj.GetDeviceInfo())
