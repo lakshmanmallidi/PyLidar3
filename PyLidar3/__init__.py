@@ -11,13 +11,13 @@ class FrequencyStep(Enum):
 
 class YdLidarX4:
     """Deals with X4 version of Ydlidar from http://www.ydlidar.com/"""
-    def __init__(self,port,chunk_size=2048):
+    def __init__(self,port,chunk_size=6000):
         """Initialize the connection and set port and baudrate."""
         self._port = port
         self._baudrate = 128000
         self._is_scanning = False
         self._is_connected = False
-        self._chunk_size=chunk_size
+        self.chunk_size=chunk_size
         
     def Connect(self):
         """Begin serial connection with Lidar by opening serial port.\nReturn success status True/False.\n"""
@@ -96,7 +96,12 @@ class YdLidarX4:
                 return False
         except Exception as e:
             return False
-        
+    @classmethod
+    def _Mean(cls,data):
+        if(len(data)>0):
+            return int(sum(data)/len(data))
+        return 0
+    
     def StartScanning(self):
         """Begin the lidar and returns a generator which returns a dictionary consisting angle(degrees) and distance(meters).\nReturn Format : {angle(1):distance, angle(2):distance,....................,angle(360):distance}."""
         if(self._is_connected):
@@ -110,28 +115,21 @@ class YdLidarX4:
                 self._s.read(7)
                 distdict = {}
                 countdict = {}
-                for i in range(0,360):
-                    distdict.update({i:0})
-                    countdict.update({i:0})
                 while self._is_scanning == True:
-                    data = self._s.read(self._chunk_size).split(b"\xaa\x55")[1:-1]
+                    for i in range(0,360):
+                        distdict.update({i:[]})
+                    data = self._s.read(self.chunk_size).split(b"\xaa\x55")[1:-1]
                     for e in data:
                         if(e[0]==0):
                             if(YdLidarX4._CheckSum(e)):
                                 d = YdLidarX4._Calculate(e)
                                 for ele in d:
                                     angle = floor(ele[1])
-                                    prev = distdict[angle]
-                                    countdict.update({angle:(countdict[angle]+1)})
-                                    curr = prev+((ele[0]-prev)/float(countdict[angle]))
-                                    distdict.update({angle:curr})
+                                    if(angle>=0 and angle<360):
+                                        distdict[angle].append(ele[0])
                     for i in distdict.keys():
-                        distdict[i]=int(round(distdict[i]))
-                    if(list(countdict.values()).count(0)<1):
-                        yield distdict
-                        for i in range(0,360):
-                            distdict.update({i:0})
-                            countdict.update({i:0})
+                        distdict[i]=self._Mean(distdict[i])
+                    yield distdict  
             else:
                 raise Exception("Device is currently in scanning mode.")
         else:
@@ -208,7 +206,7 @@ class YdLidarX4:
     
 class YdLidarG4(YdLidarX4):
     """Deals with G4 version of Ydlidar from http://www.ydlidar.com/"""
-    def __init__(self,port,chunk_size=2048):
+    def __init__(self,port,chunk_size=6000):
         """Initialize the connection and set port and baudrate."""
         YdLidarX4.__init__(self,port,chunk_size)
         self._baudrate= 230400

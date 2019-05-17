@@ -25,11 +25,15 @@ You can also install using setup.py file from git repository.
 This package consists of multiple classes representing the version of lidar you are using. The class structure is YdLidarX4 where X4 is version name ydlidar. Further contribution are actively accepted. 
 ##### Class structure:
 ###### YdLidarX4
-`Arguments`: port, chunk_size(default:2048).<br/>
+`Arguments`: port, chunk_size(default:6000).<br/>
 
 `port`: serial port to which device is connected. Example: com4, /dev/ttyAMC0.<br/>
 
 `chunk_size`: Number of bytes of data read from device. Increase in chunk_size results in more averaged angle:distance pairs but increase response time result in slower data acquisition. For faster data acquisition decrease chunk_size.<br/>
+```
+Note: Calibrate chunk size depends on your application and frequency of device. 
+if the chunk size is not enough not all angles are covered. 
+```
 
 * `Connect` -- Begin serial connection with Lidar by opening serial port. Return success status True/False.<br />
 
@@ -47,11 +51,15 @@ This package consists of multiple classes representing the version of lidar you 
 * `Disconnect` -- Stop scanning and close serial communication with Lidar. <br />
 
 ###### YdLidarG4
-`Arguments`: port, chunk_size(default:2048).<br/>
+`Arguments`: port, chunk_size(default:6000).<br/>
 
 `port`: serial port to which device is connected. Example: com4, /dev/ttyAMC0.<br/>
 
 `chunk_size`: Number of bytes of data read from device. Increase in chunk_size results in more averaged angle:distance pairs but increase response time result in slower data acquisition. For faster data acquisition decrease chunk_size.<br/>
+```
+Note: Calibrate chunk size depends on your application and frequency of device. 
+if the chunk size is not enough not all angles are covered. 
+```
 
 * `Connect` -- Begin serial connection with Lidar by opening serial port. Return success status True/False.<br />
 
