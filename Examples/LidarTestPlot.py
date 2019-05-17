@@ -32,7 +32,7 @@ if(Obj.Connect()):
     t = time.time() # start time 
     while (time.time() - t) < 30: #scan for 30 seconds
         data = next(gen)
-        for angle in range(0,361):
+        for angle in range(0,360):
             if(data[angle]>1000):
                 x[angle] = data[angle] * math.cos(math.radians(angle))
                 y[angle] = data[angle] * math.sin(math.radians(angle))
