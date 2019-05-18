@@ -160,7 +160,7 @@ def draw():
 is_plot = True
 x=[]
 y=[]
-for _ in range(361):
+for _ in range(360):
     x.append(0)
     y.append(0)
 
