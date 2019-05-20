@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="PyLidar3",
     python_requires=">=3.4",
-    version="1.4",
+    version="1.5",
     author="Lakshman mallidi",
     author_email="lakshman.mallidi@gmail.com",
     description="Library for Lidar. Currently supports YdLidar(X4,G4) from http://www.ydlidar.com",
