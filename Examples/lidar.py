@@ -120,13 +120,16 @@ class YdLidarX4:
                         distdict.update({i:[]})
                     data = self._s.read(self.chunk_size).split(b"\xaa\x55")[1:-1]
                     for e in data:
-                        if(e[0]==0):
-                            if(YdLidarX4._CheckSum(e)):
-                                d = YdLidarX4._Calculate(e)
-                                for ele in d:
-                                    angle = floor(ele[1])
-                                    if(angle>=0 and angle<360):
-                                        distdict[angle].append(ele[0])
+                        try:
+                            if(e[0]==0):
+                                if(YdLidarX4._CheckSum(e)):
+                                    d = YdLidarX4._Calculate(e)
+                                    for ele in d:
+                                        angle = floor(ele[1])
+                                        if(angle>=0 and angle<360):
+                                            distdict[angle].append(ele[0])
+                        except Exception as e:
+                            pass
                     for i in distdict.keys():
                         distdict[i]=self._Mean(distdict[i])
                     yield distdict  
