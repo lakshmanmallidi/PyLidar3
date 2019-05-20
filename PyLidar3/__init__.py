@@ -25,11 +25,10 @@ class YdLidarX4:
             if(not self._is_connected):
                 self._s=Serial(self._port, self._baudrate)
                 self._is_connected = True
+                sleep(3)
+                self._s.reset_input_buffer()
                 if("YdLidarX4" in str(type(self))):
                     self._Stop_motor()
-                while(self._s.inWaiting()==0):
-                    sleep(0.5)
-                self._s.reset_input_buffer()
                 if(self.GetHealthStatus()):
                     return True
                 else:
@@ -37,6 +36,7 @@ class YdLidarX4:
             else:
                 raise Exception("Already connected")
         except Exception as e:
+            print(e)
             return False
         
     def _Start_motor(self):
@@ -141,7 +141,7 @@ class YdLidarX4:
             if(self._is_scanning):
                 self._is_scanning = False
                 self._s.write(b"\xA5\x65")
-                sleep(2)
+                sleep(1)
                 self._s.reset_input_buffer()
                 if("YdLidarX4" in str(type(self))):
                     self._Stop_motor()
@@ -156,6 +156,8 @@ class YdLidarX4:
         if(self._is_connected):
             if self._is_scanning == True:
                 self.StopScanning()
+            self._s.reset_input_buffer()
+            sleep(0.5)
             self._s.write(b"\xA5\x91")
             sleep(0.5)
             data = self._s.read(10)
@@ -171,6 +173,8 @@ class YdLidarX4:
         if(self._is_connected):
             if self._is_scanning == True:
                 self.StopScanning()
+            self._s.reset_input_buffer()
+            sleep(0.5)
             self._s.write(b"\xA5\x90")
             sleep(0.5)
             data = self._s.read(27)
@@ -240,8 +244,10 @@ class YdLidarG4(YdLidarX4):
         if(self._is_connected):
             if self._is_scanning == True:
                 self.StopScanning()
-            self._s.write(b"\xA5\x05")
+            self._s.reset_input_buffer()
             sleep(0.5)
+            self._s.write(b"\xA5\x05")
+            sleep(1)
             data = self._s.read(8)
             if(data[7]!=1):
                 return True
@@ -284,10 +290,15 @@ class YdLidarG4(YdLidarX4):
         if(self._is_connected):
             if self._is_scanning == True:
                 self.StopScanning()
+            self._s.reset_input_buffer()
+            sleep(0.5)
             self._s.write(b"\xA5\x0D")
             sleep(0.5)
             data = self._s.read(11)
-            return (self._HexArrToDec(data[-4:]))/100
+            if(data[0]==165):
+                return (self._HexArrToDec(data[-4:]))/100.0
+            else:
+                return (self._HexArrToDec(data[:4]))/100.0
         else:
             raise Exception("Device is not connected")
         
@@ -332,8 +343,10 @@ class YdLidarG4(YdLidarX4):
         if(self._is_connected):
             if self._is_scanning == True:
                 self.StopScanning()
-            self._s.write(b"\xA5\xD1")
+            self._s.reset_input_buffer()
             sleep(0.5)
+            self._s.write(b"\xA5\xD1")
+            sleep(1)
             data = self._s.read(8)
             if(data[-1]==0):
                 return 4
@@ -351,6 +364,7 @@ class YdLidarG4(YdLidarX4):
                 self.StopScanning()
             if(self.GetLowPowerModeStatus()==False):
                 self.EnableLowPowerMode()
+                sleep(2)
             self._s.close()
             self._is_connected=False
         else:
