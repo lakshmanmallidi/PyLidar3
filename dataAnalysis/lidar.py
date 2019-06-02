@@ -72,7 +72,7 @@ class YdLidarX4:
             Angle_diff = 360+Angle_lsa-Angle_fsa
         for i in range(0,2*LSN,2):
             dist_i = YdLidarX4._HexArrToDec((d[8+i],d[8+i+1]))/4
-            Angle_i_tmp = ((Angle_diff/float(LSN))*(i/2))+Angle_fsa+YdLidarX4._AngleCorr(dist_i)
+            Angle_i_tmp = ((Angle_diff/float(LSN))*(i/2))+Angle_fsa
             if Angle_i_tmp > 360:
                 Angle_i = Angle_i_tmp-360
             elif Angle_i_tmp < 0:
