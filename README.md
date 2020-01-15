@@ -38,7 +38,7 @@ if the chunk size is not enough not all angles are covered.
 
 * `Connect` -- Begin serial connection with Lidar by opening serial port. Return success status True/False.<br />
 
-* `StartScanning` -- Begin the lidar and returns a generator which returns a dictionary consisting angle(degrees) and distance(meters).<br />
+* `StartScanning` -- Begin the lidar and returns a generator which returns a dictionary consisting angle(degrees) and distance(millimeters).<br />
  `Return Format` : {angle(0):distance, angle(2):distance,....................,angle(359):distance}<br />
 
 * `StopScanning` -- Stops scanning but keeps serial connection alive.<br />
@@ -65,7 +65,7 @@ if the chunk size is not enough not all angles are covered.
 * `Connect` -- Begin serial connection with Lidar by opening serial port. Return success status True/False.<br />
 
 
-* `StartScanning` -- Begin the lidar and returns a generator which returns a dictionary consisting angle(degrees) and distance(meters).<br />
+* `StartScanning` -- Begin the lidar and returns a generator which returns a dictionary consisting angle(degrees) and distance(millimeters).<br />
  `Return Format` : {angle(0):distance, angle(2):distance,....................,angle(359):distance}<br />
 
 * `StopScanning` -- Stops scanning but keeps serial connection alive.<br />
