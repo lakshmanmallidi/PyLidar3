@@ -11,13 +11,14 @@ class FrequencyStep(Enum):
 
 class YdLidarX4:
     """Deals with X4 version of Ydlidar from http://www.ydlidar.com/"""
-    def __init__(self,port,chunk_size=6000):
+    def __init__(self,port,chunk_size=6000,no_value=0):
         """Initialize the connection and set port and baudrate."""
         self._port = port
         self._baudrate = 128000
         self._is_scanning = False
         self._is_connected = False
         self.chunk_size=chunk_size
+        self._no_value = no_value
         
     def Connect(self):
         """Begin serial connection with Lidar by opening serial port.\nReturn success status True/False.\n"""
@@ -131,7 +132,10 @@ class YdLidarX4:
                         except Exception as e:
                             pass
                     for i in distdict.keys():
-                        distdict[i]=self._Mean(distdict[i])
+                        if len(distdict[i]) > 0:
+                            distdict[i]=self._Mean(distdict[i])
+                        else:
+                            distdict[i]=self._no_value
                     yield distdict  
             else:
                 raise Exception("Device is currently in scanning mode.")
