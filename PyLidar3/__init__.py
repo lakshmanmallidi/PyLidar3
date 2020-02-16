@@ -115,10 +115,14 @@ class YdLidarX4:
                 self._s.read(7)
                 distdict = {}
                 countdict = {}
+                lastChunk = None
                 while self._is_scanning == True:
                     for i in range(0,360):
                         distdict.update({i:[]})
-                    data = self._s.read(self.chunk_size).split(b"\xaa\x55")[1:-1]
+                    data = self._s.read(self.chunk_size).split(b"\xaa\x55")
+                    if lastChunk is not None:
+                        data[0] = lastChunk + data[0]
+                    lastChunk = data.pop()
                     for e in data:
                         try:
                             if(e[0]==0):
