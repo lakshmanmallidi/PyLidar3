@@ -65,15 +65,23 @@ class YdLidarX4:
     def _Calculate(cls,d):
         ddict=[]
         LSN=d[1]
-        Angle_fsa = ((YdLidarX4._HexArrToDec((d[2],d[3]))>>1)/64.0)+YdLidarX4._AngleCorr(YdLidarX4._HexArrToDec((d[8],d[9]))/4)
-        Angle_lsa = ((YdLidarX4._HexArrToDec((d[4],d[5]))>>1)/64.0)+YdLidarX4._AngleCorr(YdLidarX4._HexArrToDec((d[LSN+6],d[LSN+7]))/4)
+        Angle_fsa = ((YdLidarX4._HexArrToDec((d[2],d[3]))>>1)/64.0)#+YdLidarX4._AngleCorr(YdLidarX4._HexArrToDec((d[8],d[9]))/4)
+        Angle_lsa = ((YdLidarX4._HexArrToDec((d[4],d[5]))>>1)/64.0)#+YdLidarX4._AngleCorr(YdLidarX4._HexArrToDec((d[LSN+6],d[LSN+7]))/4)
         if Angle_fsa<Angle_lsa:
             Angle_diff = Angle_lsa-Angle_fsa
         else:
             Angle_diff = 360+Angle_lsa-Angle_fsa
         for i in range(0,2*LSN,2):
+            # Distance calculation
             dist_i = YdLidarX4._HexArrToDec((d[8+i],d[8+i+1]))/4
-            Angle_i_tmp = ((Angle_diff/float(LSN))*(i/2))+Angle_fsa
+            # Ignore zero values, they result in massive noise when
+            # computing mean of distances for each angle.
+            if dist_i == 0:
+                continue
+            # Intermediate angle solution
+            Angle_i_tmp = ((Angle_diff/float(LSN-1))*(i/2))+Angle_fsa
+            # Angle correction
+            Angle_i_tmp += YdLidarX4._AngleCorr(dist_i)
             if Angle_i_tmp > 360:
                 Angle_i = Angle_i_tmp-360
             elif Angle_i_tmp < 0:
