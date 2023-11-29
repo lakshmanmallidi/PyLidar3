@@ -88,7 +88,7 @@ class FrequencyStep(Enum):
 * `IncreaseCurrentFrequency` -- Increase current frequency by oneTenth or one depends on enum FrequencyStep. <br/>
 
 * `DecreaseCurrentFrequency` -- Decrease current frequency by oneTenth or one depends on enum FrequencyStep. <br/>
-```
+```python
 import PyLidar3
 port = input("Enter port name which lidar is connected:") #windows
 Obj = PyLidar3.YdLidarG4(port)
