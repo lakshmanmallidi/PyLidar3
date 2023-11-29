@@ -118,7 +118,7 @@ else:
 
 ## Examples
 This Example prints data from lidar
-```
+```python
 import PyLidar3
 import time # Time module
 #Serial port to which lidar connected, Get it from device manager windows
@@ -139,7 +139,7 @@ else:
     print("Error connecting to device")
 ```
 This Example plot the data. This example needs matplotlib library.
-```
+```python
 import threading
 import PyLidar3
 import matplotlib.pyplot as plt
