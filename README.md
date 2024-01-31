@@ -88,7 +88,7 @@ class FrequencyStep(Enum):
 * `IncreaseCurrentFrequency` -- Increase current frequency by oneTenth or one depends on enum FrequencyStep. <br/>
 
 * `DecreaseCurrentFrequency` -- Decrease current frequency by oneTenth or one depends on enum FrequencyStep. <br/>
-```
+```python
 import PyLidar3
 port = input("Enter port name which lidar is connected:") #windows
 Obj = PyLidar3.YdLidarG4(port)
@@ -118,7 +118,7 @@ else:
 
 ## Examples
 This Example prints data from lidar
-```
+```python
 import PyLidar3
 import time # Time module
 #Serial port to which lidar connected, Get it from device manager windows
@@ -139,7 +139,7 @@ else:
     print("Error connecting to device")
 ```
 This Example plot the data. This example needs matplotlib library.
-```
+```python
 import threading
 import PyLidar3
 import matplotlib.pyplot as plt
